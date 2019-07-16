@@ -1,7 +1,6 @@
 (ns cgdsclj.core
-  (:gen-class)
-  (:require [clj-http.client "3.10.0" :as client]
-            [clj-toml "0.3.1" :as toml]))
+  "Clojure based API for accessing the Cancer Genomics Data Server (CGDS)."
+  (:require [clj-http.client :as client]))
 
 (defn headers []
   {})
@@ -9,11 +8,12 @@
 (defn body []
   {})
 
-(defn json-req-header [& {:keys [conn-timeout] :or {conn-timeout 1000}}]
+(defn json-req-header
   "Generate a header for json request."
-  {:content-type :json
-   :connection-timeout conn-timeout
-   :accept :json})
+  ([] (json-req-header 1000))
+  ([conn-timeout] {:content-type :json
+                   :connection-timeout conn-timeout
+                   :accept :json}))
 
 (defn process-url [url]
   "Get data from a specified url."

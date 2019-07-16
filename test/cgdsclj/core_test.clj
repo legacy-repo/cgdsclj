@@ -2,6 +2,18 @@
   (:require [clojure.test :refer :all]
             [cgdsclj.core :refer :all]))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+(deftest test-headers
+  (is (= {} (headers))))
+
+(deftest test-body
+  (is (= {} (body))))
+
+(deftest test-json-req-header
+  (is (= {:content-type :json
+          :connection-timeout 1000
+          :accept :json}
+         (json-req-header)))
+  (is (= {:content-type :json
+          :connection-timeout 100
+          :accept :json}
+         (json-req-header 100))))

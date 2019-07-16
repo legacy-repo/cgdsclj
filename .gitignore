@@ -10,3 +10,22 @@ pom.xml.asc
 /.nrepl-port
 .hgignore
 .hg/
+
+# use glob syntax.
+syntax: glob
+creds.clj
+Manifest.txt
+aws.clj
+*.ser
+*~
+*.bak
+*.off
+*.old
+.DS_Store
+*.#*
+*#*
+*.classpath
+*.project
+*.settings
+*.pyc
+.vscode
