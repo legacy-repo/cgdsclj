@@ -1,5 +1,7 @@
 # Introduction to cgdsclj
 
+[![Clojars Project](https://img.shields.io/clojars/v/cgdsclj.svg)](https://clojars.org/cgdsclj)
+
 Clojure based API for accessing the Cancer Genomics Data Server (CGDS).
 
 ## Table of Contents
