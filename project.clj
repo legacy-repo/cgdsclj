@@ -9,7 +9,9 @@
   :min-lein-version "2.0.0"
   :resource-paths ["resources"]
   :target-path "target/%s"
-  :profiles {:dev {:dependencies [[org.clojure/clojure "1.10.0"]]
+  :profiles {:dev {:dependencies [[org.clojure/clojure "1.10.0"]
+                                  [slingshot "0.12.2"]
+                                  [org.clojure/tools.logging "0.2.3"]]
                    :plugins [[lein-ancient "0.6.15"]]}
              :1.6 {:dependencies [[org.clojure/clojure "1.6.0"]]}
              :1.7 {:dependencies [[org.clojure/clojure "1.7.0"]]}

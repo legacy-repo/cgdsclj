@@ -4,6 +4,8 @@
 
 Clojure based API for accessing the Cancer Genomics Data Server (CGDS).
 
+**NOTE: It's an unstable version, NOT RECOMMENDED for production use.**
+
 ## Table of Contents
 
 - [Introduction](#introduction)
@@ -44,6 +46,19 @@ To use cgdsclj:
 
 # get genetic profile
 (genetic-profiles base-url "um_qimr_2016")
+
+# get clinical data
+(clinical-data base-url ["um_qimr_2016_all"] :case-set-id)
+
+# get profile data
+(profile-data base-url ["EGFR"] "um_qimr_2016_mutations" ["um_qimr_2016_all"] :case-set-id)
+```
+
+## Advanced Usage
+
+```
+# You may need to change headers for each http request.
+
 ```
 
 ## Contact
