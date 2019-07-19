@@ -35,30 +35,53 @@ To use cgdsclj:
 ```clojure
 (require '[cgdsclj "0.1.0" as cgds])
 
-(def base-url "http://www.cbioportal.org/")
-
 # get cancer study
-(def cancer-studies (cgds/cancer-studies base-url))
-(cgds/list->map cancer-studies)
+(cgds/list->map (cgds/cancer-studies))
 
 # get case list
-(case-lists base-url "um_qimr_2016")
+(case-lists "um_qimr_2016")
 
 # get genetic profile
-(genetic-profiles base-url "um_qimr_2016")
+(genetic-profiles "um_qimr_2016")
 
 # get clinical data
-(clinical-data base-url ["um_qimr_2016_all"] :case-set-id)
+(clinical-data ["um_qimr_2016_all"] :case-set-id)
 
 # get profile data
-(profile-data base-url ["EGFR"] "um_qimr_2016_mutations" ["um_qimr_2016_all"] :case-set-id)
+(profile-data ["EGFR"] "um_qimr_2016_mutations" ["um_qimr_2016_all"] :case-set-id)
 ```
 
 ## Advanced Usage
 
 ```
-# You may need to change headers for each http request.
+# You may want to change headers and base-url for each http request.
 
+(require '[cgdsclj "0.1.0" as cgds])
+
+(def base-url "http://www.cbioportal.org/")
+
+(def headers
+  {:content-type :json
+   :connection-timeout 10000
+   :accept :json})
+
+# get cancer study
+(cgds/list->map (cgds/cancer-studies base-url headers))
+
+# get case list
+(case-lists "um_qimr_2016" base-url headers)
+
+# get genetic profile
+(genetic-profiles "um_qimr_2016" base-url headers)
+
+# get clinical data
+(clinical-data ["um_qimr_2016_all"] :case-set-id base-url headers)
+
+# get mutation data
+(mutation-data "um_qimr_2016" "um_qimr_2016_all" "um_qimr_2016_mutations" ["EGFR"])
+
+# get profile data
+(profile-data ["EGFR"] ["um_qimr_2016_mutations"] ["um_qimr_2016_all"] :case-set-id base-url headers)
 ```
 
 ## Contact
