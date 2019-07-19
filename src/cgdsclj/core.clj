@@ -7,6 +7,8 @@
    :connection-timeout 1000
    :accept :json})
 
+(def cgds-base-url "http://www.cbioportal.org/")
+
 (defn strip-slash [url]
   "Strip slash from a string"
   (clojure.string/replace url #"/$" ""))
@@ -53,27 +55,35 @@
 
 (def not-nil? (complement nil?))
 
-(defn cancer-studies [url]
+(defn cancer-studies [& {:keys [url headers]
+                         :or {url cgds-base-url headers headers}}]
   "Get cancer studies from data portal."
   (-> (new-url url "/webservice.do?cmd=getCancerStudies")
       (body-data headers)
       (string->nested-list)))
 
-(defn case-lists [url cancer-study-id]
+(defn case-lists [cancer-study-id
+                  & {:keys [url headers]
+                     :or {url cgds-base-url headers headers}}]
   "Get case list from data portal"
   (-> (new-url url "/webservice.do?cmd=getCaseLists"
                "&cancer_study_id=" cancer-study-id)
       (body-data headers)
       (string->nested-list)))
 
-(defn genetic-profiles [url cancer-study-id]
+(defn genetic-profiles [cancer-study-id
+                        & {:keys [url headers]
+                           :or {url cgds-base-url headers headers}}]
   "Get genetic profiles from data portal"
   (-> (new-url url "/webservice.do?cmd=getGeneticProfiles"
                "&cancer_study_id=" cancer-study-id)
       (body-data headers)
       (string->nested-list)))
 
-(defn mutation-data [url cancer-study-id case-list-id genetic-profile-id genes]
+(defn mutation-data [cancer-study-id case-list-id
+                     genetic-profile-id genes
+                     & {:keys [url headers]
+                        :or {url cgds-base-url headers headers}}]
   "Get mutation data from data portal"
   (-> (new-url url "/webservice.do?cmd=getMutationData"
                "&cancer_study_id=" cancer-study-id
@@ -87,7 +97,10 @@
                     :case-ids-key "&case_ids_key="
                     :case-set-id "&case_set_id="})
 
-(defn profile-data [url genes genetic-profiles cases case-type]
+(defn profile-data [genes genetic-profiles
+                    cases case-type
+                    & {:keys [url headers]
+                       :or {url cgds-base-url headers headers}}]
   "Get profile data from data portal"
   (-> (new-url url "/webservice.do?cmd=getProfileData"
                "&gene_list=" (clojure.string/join genes)
@@ -98,7 +111,10 @@
       (body-data headers)
       (string->nested-list)))
 
-(defn clinical-data [url cases case-type]
+(defn clinical-data [cases case-type
+                     & {:keys [url headers]
+                        :or {url cgds-base-url
+                             headers headers}}]
   "Get clinical data from data portal"
   (-> (new-url url "/webservice.do?cmd=getClinicalData"
                (case-type case-type-map)
