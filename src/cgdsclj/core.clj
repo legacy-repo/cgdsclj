@@ -60,40 +60,34 @@
 (defn filter-annotation [nested-list]
   (filter #(re-matches #"^[^#].*" (clojure.string/join %)) nested-list))
 
-(defn cancer-studies [& [url & [headers]]]
-  "Get cancer studies from data portal."
-  (-> (new-url (base-url url) "/webservice.do?cmd=getCancerStudies")
+(defn get-data [path & [url & [headers]]]
+  (-> (new-url (base-url url) (clojure.string/join path))
       (body-data (merge default-headers headers))
       (string->nested-list)
       (filter-annotation)))
+
+(defn cancer-studies [& [url & [headers]]]
+  "Get cancer studies from data portal."
+  (get-data ["/webservice.do?cmd=getCancerStudies"] url headers))
 
 (defn case-lists [cancer-study-id & [url & [headers]]]
   "Get case list from data portal"
-  (-> (new-url (base-url url) "/webservice.do?cmd=getCaseLists"
-               "&cancer_study_id=" cancer-study-id)
-      (body-data (merge default-headers headers))
-      (string->nested-list)
-      (filter-annotation)))
+  (get-data ["/webservice.do?cmd=getCaseLists"
+             "&cancer_study_id=" cancer-study-id] url headers))
 
 (defn genetic-profiles [cancer-study-id & [url & [headers]]]
   "Get genetic profiles from data portal"
-  (-> (new-url (base-url url) "/webservice.do?cmd=getGeneticProfiles"
-               "&cancer_study_id=" cancer-study-id)
-      (body-data (merge default-headers headers))
-      (string->nested-list)
-      (filter-annotation)))
+  (get-data ["/webservice.do?cmd=getGeneticProfiles"
+             "&cancer_study_id=" cancer-study-id] url headers))
 
 (defn mutation-data [cancer-study-id case-list-id
                      genetic-profile-id genes & [url & [headers]]]
   "Get mutation data from data portal"
-  (-> (new-url (base-url url) "/webservice.do?cmd=getMutationData"
-               "&cancer_study_id=" cancer-study-id
-               "&case_set_id=" case-list-id
-               "&genetic_profile_id=" genetic-profile-id
-               "&gene_list=" (clojure.string/join "," genes))
-      (body-data (merge default-headers headers))
-      (string->nested-list)
-      (filter-annotation)))
+  (get-data ["/webservice.do?cmd=getMutationData"
+             "&cancer_study_id=" cancer-study-id
+             "&case_set_id=" case-list-id
+             "&genetic_profile_id=" genetic-profile-id
+             "&gene_list=" (clojure.string/join "," genes)] url headers))
 
 (def case-type-map {:case-list "&case_list="
                     :case-ids-key "&case_ids_key="
@@ -101,21 +95,15 @@
 
 (defn profile-data [genes genetic-profiles cases case-type & [url & [headers]]]
   "Get profile data from data portal"
-  (-> (new-url (base-url url) "/webservice.do?cmd=getProfileData"
-               "&gene_list=" (clojure.string/join "," genes)
-               "&genetic_profile_id=" (clojure.string/join "," genetic-profiles)
-               "&id_type=" "gene_symbol"
-               (case-type case-type-map)
-               (clojure.string/join "," cases))
-      (body-data (merge default-headers headers))
-      (string->nested-list)
-      (filter-annotation)))
+  (get-data ["/webservice.do?cmd=getProfileData"
+             "&gene_list=" (clojure.string/join "," genes)
+             "&genetic_profile_id=" (clojure.string/join "," genetic-profiles)
+             "&id_type=" "gene_symbol"
+             (case-type case-type-map)
+             (clojure.string/join "," cases)] url headers))
 
 (defn clinical-data [cases case-type & [url & [headers]]]
   "Get clinical data from data portal"
-  (-> (new-url (base-url url) "/webservice.do?cmd=getClinicalData"
-               (case-type case-type-map)
-               (clojure.string/join "," cases))
-      (body-data (merge default-headers headers))
-      (string->nested-list)
-      (filter-annotation)))
+  (get-data ["/webservice.do?cmd=getClinicalData"
+             (case-type case-type-map)
+             (clojure.string/join "," cases)] url headers))
